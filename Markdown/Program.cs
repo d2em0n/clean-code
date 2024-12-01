@@ -59,31 +59,34 @@ namespace Markdown
         {
             var text = "# Спецификация _языка_ _ раз_метки\nfs__df dfh__\n#sef";
 
-            var tokens = text.Split("\n", StringSplitOptions.None)
-                .Select(line => new Token(line, TokenProperty.Paragraph))
-                .Select(t => t = t.Value.StartsWith('#') ? new Token(t.Value[1..], TokenProperty.Head) : t)
-                ;
+            var parser = new Parser();
+            var dom = parser.BuildDom(text);
 
-            foreach (var token in tokens)
-            {
-                var queue = new Queue<Token>();
-                queue.Enqueue(token);
-                while (queue.Count > 0)
-                {
-                    var current = queue.Dequeue();
-                    FindChildren(current);
-                    foreach (var child in current.Children)
-                        queue.Enqueue(child);
-                }
+            //var tokens = text.Split("\n", StringSplitOptions.None)
+            //    .Select(line => new Token(line, TokenProperty.Paragraph))
+            //    .Select(t => t = t.Value.StartsWith('#') ? new Token(t.Value[1..], TokenProperty.Head) : t)
+            //    ;
 
-                //Console.WriteLine(token);
-                //Console.WriteLine("---------------------------");
-                //FindChildren(token);
-                //foreach (var c in token.Children)
-                //    Console.WriteLine(c);
-                //Console.WriteLine("=========");
-                //Console.WriteLine();
-            }
+            //foreach (var token in tokens)
+            //{
+            //    var queue = new Queue<Token>();
+            //    queue.Enqueue(token);
+            //    while (queue.Count > 0)
+            //    {
+            //        var current = queue.Dequeue();
+            //        FindChildren(current);
+            //        foreach (var child in current.Children)
+            //            queue.Enqueue(child);
+            //    }
+
+            //Console.WriteLine(token);
+            //Console.WriteLine("---------------------------");
+            //FindChildren(token);
+            //foreach (var c in token.Children)
+            //    Console.WriteLine(c);
+            //Console.WriteLine("=========");
+            //Console.WriteLine();
+            //}
         }
     }
 }

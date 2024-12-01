@@ -30,7 +30,7 @@ namespace Markdown.MDParser
             return new DOM(tokens);
         }
 
-        public static void FindChildren(Token token)
+        private static void FindChildren(Token token)
         {
             if (!Complex.Properties.Contains(token.Property))
                 return;
