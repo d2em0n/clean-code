@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Markdown
 {
-    public enum TokenProperty
+    public class DOM(IEnumerable<Token> tokens)
     {
-        Normal,
-        Italic,
-        Bold,
-        Head,
-        Paragraph
+        public readonly List<Token> Tokens = tokens.ToList();
     }
 }

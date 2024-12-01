@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 
 namespace Markdown
 {
-    public class Token
+    public class Token(string value, TokenProperty property)
     {
-        public readonly int Position;
-      
-        public readonly string Value;
+        public string Value { get; set; } = value;
+        public readonly TokenProperty Property = property;
+        public List<Token> Children = [];
 
-        public readonly TokenProperty Property;
-
-        public Token(int position, string value)
+        public override string ToString()
         {
-            Position = position;
-            Value = value;
+            return $"{Value}       {Property}";
         }
     }
 }

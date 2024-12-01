@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Markdown
+namespace Markdown.MDParser
 {
-    public enum TokenProperty
+    public class Markers
     {
-        Normal,
-        Italic,
-        Bold,
-        Head,
-        Paragraph
+        public static readonly HashSet<char> Chars = ['_', '\\'];
     }
 }
+

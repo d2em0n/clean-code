@@ -1,13 +1,42 @@
-﻿using Markdown.MDParser;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Markdown
+namespace Markdown.MDParser
 {
-    internal class Program
+    public class Parser : IParser
     {
+        public DOM BuildDom(string text)
+        {
+            var tokens = text.Split("\n", StringSplitOptions.None)
+                    .Select(line => new Token(line, TokenProperty.Paragraph))
+                    .Select(t => t = t.Value.StartsWith('#') ? new Token(t.Value[1..], TokenProperty.Head) : t)
+                ;
+
+            foreach (var token in tokens)
+            {
+                var queue = new Queue<Token>();
+                queue.Enqueue(token);
+                while (queue.Count > 0)
+                {
+                    var current = queue.Dequeue();
+                    FindChildren(current);
+                    foreach (var child in current.Children)
+                        queue.Enqueue(child);
+                }
+            }
+            return new DOM(tokens);
+        }
+
         public static void FindChildren(Token token)
         {
             if (!Complex.Properties.Contains(token.Property))
                 return;
+            var hidden = new Hidden();
+            var italic = new Italic();
+            var norm = new Normal();
 
             var i = 0;
             var text = token.Value;
@@ -19,7 +48,6 @@ namespace Markdown
                 {
                     case '_':
                         {
-                            var italic = new Italic();
                             var child = italic.TryFindToken(text, i);
                             token.Children.Add(child);
 
@@ -34,7 +62,6 @@ namespace Markdown
 
                     case '\\':
                         {
-                            var hidden = new Hidden();
                             var child = hidden.TryFindToken(text, i);
                             i += child.Value.Length + 1;
                             if (child.Value == string.Empty)
@@ -45,44 +72,12 @@ namespace Markdown
 
                     default:
                         {
-                            var norm = new Normal();
                             var child = norm.TryFindToken(text, i);
                             token.Children.Add(child);
                             i += child.Value.Length;
                             break;
                         }
                 }
-            }
-        }
-
-        static void Main()
-        {
-            var text = "# Спецификация _языка_ _ раз_метки\nfs__df dfh__\n#sef";
-
-            var tokens = text.Split("\n", StringSplitOptions.None)
-                .Select(line => new Token(line, TokenProperty.Paragraph))
-                .Select(t => t = t.Value.StartsWith('#') ? new Token(t.Value[1..], TokenProperty.Head) : t)
-                ;
-
-            foreach (var token in tokens)
-            {
-                var queue = new Queue<Token>();
-                queue.Enqueue(token);
-                while (queue.Count > 0)
-                {
-                    var current = queue.Dequeue();
-                    FindChildren(current);
-                    foreach (var child in current.Children)
-                        queue.Enqueue(child);
-                }
-
-                //Console.WriteLine(token);
-                //Console.WriteLine("---------------------------");
-                //FindChildren(token);
-                //foreach (var c in token.Children)
-                //    Console.WriteLine(c);
-                //Console.WriteLine("=========");
-                //Console.WriteLine();
             }
         }
     }

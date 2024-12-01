@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Markdown
 {
-    public enum TokenProperty
+    public class Md
     {
-        Normal,
-        Italic,
-        Bold,
-        Head,
-        Paragraph
+       
     }
 }

@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Markdown
 {
-    public enum TokenProperty
+    public interface IParser
     {
-        Normal,
-        Italic,
-        Bold,
-        Head,
-        Paragraph
+        public DOM BuildDom(string text);
     }
 }
