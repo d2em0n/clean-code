@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Markdown
 {
-    public class DOM(IEnumerable<Token> tokens)
+    public class DOM(List<Token> tokens)
     {
-        public readonly List<Token> Tokens = tokens.ToList();
+        public readonly List<Token> Tokens = tokens;
     }
 }

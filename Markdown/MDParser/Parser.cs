@@ -13,6 +13,7 @@ namespace Markdown.MDParser
             var tokens = text.Split("\n", StringSplitOptions.None)
                     .Select(line => new Token(line, TokenProperty.Paragraph))
                     .Select(t => t = t.Value.StartsWith('#') ? new Token(t.Value[1..], TokenProperty.Head) : t)
+                    .ToList()
                 ;
 
             foreach (var token in tokens)

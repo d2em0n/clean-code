@@ -1,4 +1,6 @@
-﻿using Markdown.MDParser;
+﻿using Markdown.HTMLConverter;
+using Markdown.MDParser;
+using System.Text;
 
 namespace Markdown
 {
@@ -55,38 +57,47 @@ namespace Markdown
             }
         }
 
+        public static string PrintToken(Token token)
+        {
+            var result = new StringBuilder();
+            var stack = new Stack<Token>();
+            var closings = new Stack<string>();
+            stack.Push(token);
+            result.Append(Tags.Open[token.Property]);
+            closings.Push(Tags.Close[token.Property]);
+            while (stack.Count != 0)
+            {
+                var current = stack.Pop();
+                foreach (var next in current.Children)
+                {
+                    result.Append(Tags.Open[next.Property]);
+                    if (next.Property == TokenProperty.Normal || next.Property == TokenProperty.Italic)
+                    {
+                        result.Append(next.Value);
+                        result.Append(Tags.Close[next.Property]);
+                    }
+                    else closings.Push(Tags.Close[next.Property]);
+                    stack.Push(next);
+                }
+            }
+                while (closings.Count != 0)
+                    result.Append(closings.Pop());
+            return result.ToString();
+        }
         static void Main()
         {
-            var text = "# Спецификация _языка_ _ раз_метки\nfs__df dfh__\n#sef";
+            var text = "#Заголовок __с _разными_ символами__\n# Спецификация _языка_ _ раз_метки\nfs__df dfh__\n#sef";
 
             var parser = new Parser();
             var dom = parser.BuildDom(text);
 
-            //var tokens = text.Split("\n", StringSplitOptions.None)
-            //    .Select(line => new Token(line, TokenProperty.Paragraph))
-            //    .Select(t => t = t.Value.StartsWith('#') ? new Token(t.Value[1..], TokenProperty.Head) : t)
-            //    ;
+            var result = new StringBuilder();
+            foreach (var token in dom.Tokens)
+            {
+                result.Append(PrintToken(token));
+            }
+            Console.WriteLine(result);
 
-            //foreach (var token in tokens)
-            //{
-            //    var queue = new Queue<Token>();
-            //    queue.Enqueue(token);
-            //    while (queue.Count > 0)
-            //    {
-            //        var current = queue.Dequeue();
-            //        FindChildren(current);
-            //        foreach (var child in current.Children)
-            //            queue.Enqueue(child);
-            //    }
-
-            //Console.WriteLine(token);
-            //Console.WriteLine("---------------------------");
-            //FindChildren(token);
-            //foreach (var c in token.Children)
-            //    Console.WriteLine(c);
-            //Console.WriteLine("=========");
-            //Console.WriteLine();
-            //}
         }
     }
 }
