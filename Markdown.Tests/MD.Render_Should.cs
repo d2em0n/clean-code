@@ -70,5 +70,24 @@ namespace Markdown.Tests
             Md.Render("[name](address)", _parser, _converter)
                 .Should().Be("<a href=address>name</a>\n");
         }
+
+        [TestCaseSource(nameof(TestCases))]
+        public void RenderWorksCorrectly((string text, string expectedText) td)
+        {
+            var returnedText = Md.Render(td.text, _parser, _converter);
+
+            returnedText.Should().BeEquivalentTo(td.expectedText);
+        }
+
+        public static IEnumerable<(string, string)> TestCases()
+        {
+            yield return ("# Заголовок __с _разными_ символами__",
+                "<h1> Заголовок <strong>с <em>разными</em> символами</strong></h1>\n");
+            yield return ("____", "____\n");
+            yield return ("текста c цифрами_12_3", "текста c цифрами_12_3\n");
+            yield return ("в _нач_але, и в сер_еди_не, и в кон_це._", "в <em>нач</em>але, и в сер<em>еди</em>не, и в кон<em>це.</em>\n");
+            yield return ("в ра_зных сл_овах", "в ра_зных сл_овах\n");
+        }
+
     }
 }

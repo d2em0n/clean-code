@@ -47,7 +47,7 @@ namespace Markdown.HTMLConverter
             }
             sb.Append(Tags.Open[TokenProperty.Link]);
             sb.Append(address);
-            sb.Append(">");
+            sb.Append('>');
             sb.Append(name);
             sb.Append(Tags.Close[TokenProperty.Link]);
         }
