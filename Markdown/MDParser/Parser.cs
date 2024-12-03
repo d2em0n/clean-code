@@ -38,6 +38,7 @@ namespace Markdown.MDParser
             var hidden = new Hidden();
             var italic = new Italic();
             var norm = new Normal();
+            var link = new Link();
 
             var i = 0;
             var text = token.Value;
@@ -68,6 +69,17 @@ namespace Markdown.MDParser
                             if (child.Value == string.Empty)
                                 child.Value = "\\";
                             token.Children.Add(child);
+                            break;
+                        }
+                    case '[':
+                        {
+                            var child = link.TryFindToken(text, i);
+                            token.Children.Add(child);
+                            i += child.Property switch
+                            {
+                                TokenProperty.Link => child.Value.Length + 1,
+                                _ => 1
+                            };
                             break;
                         }
 

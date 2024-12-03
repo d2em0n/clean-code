@@ -12,8 +12,9 @@ namespace Markdown.HTMLConverter
             { TokenProperty.Bold, "<strong>"},
             { TokenProperty.Head, "<h1>"},
             { TokenProperty.Italic, "<em>"},
-            { TokenProperty.Paragraph, ""},
-            { TokenProperty.Normal, ""}
+            { TokenProperty.Paragraph, string.Empty},
+            { TokenProperty.Normal, string.Empty},
+            { TokenProperty.Link , "<a href="}
         };
 
         public static Dictionary<TokenProperty, string> Close = new() {
@@ -21,7 +22,8 @@ namespace Markdown.HTMLConverter
             { TokenProperty.Head, "</h1>\n"},
             { TokenProperty.Italic, "</em>"},
             { TokenProperty.Paragraph, "\n"},
-            { TokenProperty.Normal, ""}
+            { TokenProperty.Normal, string.Empty},
+            {TokenProperty.Link , "</a>"}
         };
     }
 }

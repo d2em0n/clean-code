@@ -12,6 +12,7 @@ namespace Markdown
         Italic,
         Bold,
         Head,
-        Paragraph
+        Paragraph,
+        Link
     }
 }

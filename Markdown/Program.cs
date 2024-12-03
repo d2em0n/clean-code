@@ -71,7 +71,7 @@ namespace Markdown
                 foreach (var next in current.Children)
                 {
                     result.Append(Tags.Open[next.Property]);
-                    if (next.Property == TokenProperty.Normal || next.Property == TokenProperty.Italic)
+                    if (next.Property is TokenProperty.Normal or TokenProperty.Italic)
                     {
                         result.Append(next.Value);
                         result.Append(Tags.Close[next.Property]);
@@ -86,16 +86,14 @@ namespace Markdown
         }
         static void Main()
         {
-            var text = "#Заголовок __с _разными_ символами__\n# Спецификация _языка_ _ раз_метки\nfs__df dfh__\n#sef";
+            var text = "Внутри __двойного выделения _одинарное_ тоже__ работает";
 
             var parser = new Parser();
             var dom = parser.BuildDom(text);
+            var converter = new Converter();
 
             var result = new StringBuilder();
-            foreach (var token in dom.Tokens)
-            {
-                result.Append(PrintToken(token));
-            }
+            result.Append(converter.Convert(dom));
             Console.WriteLine(result);
 
         }

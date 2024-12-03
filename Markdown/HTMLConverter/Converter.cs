@@ -8,39 +8,55 @@ namespace Markdown.HTMLConverter
 {
     public class Converter : IConverter
     {
-        private static string PrintToken(Token token)
+        public static void GetContent(Token token, StringBuilder sb)
         {
-            var result = new StringBuilder();
-            var stack = new Stack<Token>();
-            var closings = new Stack<string>();
-            stack.Push(token);
-            result.Append(Tags.Open[token.Property]);
-            closings.Push(Tags.Close[token.Property]);
-            while (stack.Count != 0)
+            if (token.Children.Count == 0)
             {
-                var current = stack.Pop();
-                foreach (var next in current.Children)
+                if (token.Property != TokenProperty.Link)
                 {
-                    result.Append(Tags.Open[next.Property]);
-                    if (next.Property is TokenProperty.Normal or TokenProperty.Italic)
-                    {
-                        result.Append(next.Value);
-                        result.Append(Tags.Close[next.Property]);
-                    }
-                    else closings.Push(Tags.Close[next.Property]);
-                    stack.Push(next);
+                    sb.Append(Tags.Open[token.Property]);
+                    sb.Append(token.Value);
+                    sb.Append(Tags.Close[token.Property]);
                 }
+                else ConvertLink(token.Value, sb);
             }
-            while (closings.Count != 0)
-                result.Append(closings.Pop());
-            return result.ToString();
+            else
+            {
+                sb.Append(Tags.Open[token.Property]);
+                foreach (var nextToken in token.Children)
+                    GetContent(nextToken, sb);
+                sb.Append(Tags.Close[token.Property]);
+            }
+            return;
+        }
+
+        public static void ConvertLink(string text, StringBuilder sb)
+        {
+            var i = 3;
+            string name;
+            string address;
+            while (true)
+            {
+                if (text[i] == '+' && text[i - 1] == '+' && text[i - 2] == '+')
+                {
+                    name = text[..(i - 2)];
+                    address = text[(i + 1)..];
+                    break;
+                }
+                i++;
+            }
+            sb.Append(Tags.Open[TokenProperty.Link]);
+            sb.Append(address);
+            sb.Append(">");
+            sb.Append(name);
+            sb.Append(Tags.Close[TokenProperty.Link]);
         }
 
         public string Convert(DOM dom)
         {
             var result = new StringBuilder();
             foreach (var token in dom.Tokens)
-                result.Append(PrintToken(token));
+                GetContent(token, result);
             return result.ToString();
         }
     }
